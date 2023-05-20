@@ -1,0 +1,21 @@
+
+<h1>HBS!</h1>
+<p>
+    Seja bem-vindo {{user.name}} {{user.surname}}!
+</p>
+{{#if user.maior }}
+<p>
+    Maior de idade. Permissões totais!
+</p>
+{{else}}
+<p>
+    Menor de idade. Permissões limitadas!
+</p>
+{{/if}}
+
+<hr>
+<ul>
+{{#each itens}}
+    <li>{{this}}</li>
+{{/each}}
+</ul>

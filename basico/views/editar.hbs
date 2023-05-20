@@ -1,0 +1,13 @@
+<h1>Cadastro de pessoas</h1>
+<form action="/editar" method="POST" class="form">
+    <input type="hidden" name="id" value="{{pessoa.id}}" />    
+    <div class="form-control">
+        <label for="nome">Nome:</label>
+        <input type="text" value="{{pessoa.nome}}" name="nome" placeholder="Informe o nome">
+    </div>
+    <div class="form-control">
+        <label for="ano">Ano de Nascimento:</label>
+        <input type="number" value="{{pessoa.ano_nascimento}}" name="ano" placeholder="Informe o ano">
+    </div>
+    <input type="submit" value="Editar"> 
+</form>

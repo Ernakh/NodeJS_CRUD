@@ -1,0 +1,12 @@
+<h1>Listagem de pessoas</h1>
+{{#each pessoas}}
+    
+    <div>
+        {{this.nome}} - {{this.ano_nascimento}} - 
+        <form method="post" action="pessoa/{{this.id}}">
+            <input type="submit" value="Remover">
+        </form>
+    </div>
+    <hr>
+
+{{/each}}
