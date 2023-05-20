@@ -4,55 +4,9 @@ const express = require('express');
 const hbs = require("hbs");
 const path = require('path');
 
-// var bodyParser = require('body-parser');
-// var jsonParser = bodyParser.json();
-// var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const conn = require('./db/conn');
 
-const { Client } = require('pg')
- 
-const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  database: 'nodejs',
-  user: 'admin',
-  password: 'admin',
-})
-
-client.connect((err) => {
-  if (err) {
-    console.error('connection error', err.stack)
-  } else {
-    console.log('connected')
-  }
-})
-
-//Calling client.connect without a callback yields a promise:
-// const { Client } = require('pg')
-// const client = new Client()
-// client
-//   .connect()
-//   .then(() => console.log('connected'))
-//   .catch((err) => console.error('connection error', err.stack))
-
-/*
-CREATE TABLE pessoas(
-    id SERIAL primary key,
-	nome varchar(100) not null,
-	ano_nascimento integer
-);
-
-insert into pessoas (nome, ano_nascimento) values ('Fabrício', 1990)
-
-select * from pessoas
-
-*/
-
-//await banco.connect();
-// const res = await banco.query('SELECT $1::text as message', ['Hello world!'])
-// console.log(res.rows[0].message) // Hello world!
-// await banco.end()
-
-
+const Pessoa = require('.models/Pessoa');
 
 const app = express();
 
@@ -69,19 +23,6 @@ app.use(
     extended: true,
   }),
 )
-
-//  app.engine('handlebars', exphbs.engine({ extname: '.hbs', defaultLayout: "main"}));
-//  app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: "main"}));
-// app.engine('handlebars', exphbs())
-// app.set('view engine', 'handlebars');
-
-// app.engine('.hbs', exphbs({
-//     defaultLayout: 'main',
-//     extname: '.hbs',
-//     layoutsDir: path.join(__dirname, 'views/layouts')
-//   }))
-//   app.set('view engine', '.hbs')
-//   app.set('views', path.join(__dirname, 'views'))
 
 app.get('/blog', (req, res) => {
     const posts = [
@@ -200,10 +141,7 @@ app.post('/pessoa', (req, res) =>
 
   });
 
-  //client.end();
-
   res.redirect('/pessoas');
-  // res.render("pessoas", { layout: 'layouts/main' });
 });
 
 
@@ -230,8 +168,6 @@ app.post('/editar', (req, res) =>
 
   });
 
-  //client.end();
-
   res.redirect('/pessoas');
 });
 
@@ -254,7 +190,7 @@ app.get('/editar/:id', (req, res) =>
       return;
     }
     console.log(data.rows);
-    // pessoas = JSON.parse(data);
+    
     const pessoa = data.rows[0];
     res.render("editar", { layout: 'layouts/main', pessoa: pessoa });
   });
@@ -285,3 +221,10 @@ app.listen(3000, () =>
 {
     console.log('rodando...');
 });
+
+
+// conn.sync().then(() => 
+// {
+//   app.listen(3000);
+//   console.log('rodando...');
+// });
