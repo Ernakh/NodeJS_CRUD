@@ -1,11 +1,12 @@
-const {DataTypes} = require('sequelized');
+const {DataTypes} = require('sequelize');
 
 const db = require('../db/conn');
 
 const Pessoa = db.define('Pessoa', 
 {
-    id: {
-        type: Sequelize.INTEGER,
+    id: 
+    {
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
@@ -20,6 +21,12 @@ const Pessoa = db.define('Pessoa',
         type: DataTypes.INTEGER,
         allowNull: true
     }
-});
+    
+},
+{
+    tableName: "pessoas",
+    timestamps: false
+}
+);
 
 module.exports = Pessoa;

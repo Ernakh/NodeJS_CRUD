@@ -3,7 +3,11 @@ const sequelize = new Sequelize(
   'nodejs', 'admin', 'admin',
   {
     host:'localhost',
-    dialect:'postgresql'
+    dialect:'postgresql',
+    define: 
+    {
+      timestamps: false
+    }
   });
 
   

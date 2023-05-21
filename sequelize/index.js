@@ -6,7 +6,7 @@ const path = require('path');
 
 const conn = require('./db/conn');
 
-const Pessoa = require('.models/Pessoa');
+const Pessoa = require('./models/Pessoa');
 
 const app = express();
 
@@ -48,152 +48,75 @@ app.get('/pessoa', (req, res) =>
     res.render("cadastro", { layout: 'layouts/main' });
 });
 
-app.get('/pessoas/:id', (req, res) => 
+app.get('/pessoas/:id', async (req, res) => 
 {
   const id = req.params.id;
 
-  const sql = 
-  {
-    text:`select * from pessoas where id = $1`,
-    values: [id]
-  }
+  const pessoas = await Pessoa.findAll({raw:true, where: {id:id}});
+  // const pessoas = await Pessoa.findOne({raw:true, where: {id:id}});//funciona da mesma forma, mas retorna o objeto e não um array
 
-  client.query(sql,(err,data) => 
-  {
-    if(err)
-    {
-      console.log(err);
-      return;
-    }
-    console.log(data.rows);
-    // pessoas = JSON.parse(data);
-    const pessoas = data.rows;
-    res.render("pessoas", { layout: 'layouts/main', pessoas: pessoas });
-  });
-  
-  //client.end();
+  res.render("pessoas", { layout: 'layouts/main', pessoas: pessoas });
 
 });
 
-app.get('/pessoas', (req, res) => 
+app.get('/pessoas', async (req, res) => 
 {
-  const sql = "select * from pessoas";
+  const pessoas = await Pessoa.findAll({raw:true});//raw para vir como vetor//remover quando tem relacionamentos
 
-  client.query(sql, (err,data) => 
-  {
-    if(err)
-    {
-      console.log(err);
-      return;
-    }
-    console.log(data.rows);
-    // pessoas = JSON.parse(data);
-    const pessoas = data.rows;
-    res.render("pessoas", { layout: 'layouts/main', pessoas: pessoas });
-  });
-  
-  //client.end();
-
+  res.render("pessoas", {layout: 'layouts/main', pessoas:pessoas});
 });
 
-
-app.post('/pessoa/:id', (req, res) => 
+app.post('/pessoa/:id', async (req, res) => 
 {
   const id = req.params.id;
 
-  const sql = 
-  {
-    text:`delete from pessoas where id = $1`,
-    values: [id]
-  }
-
-  client.query(sql, (err, res) => 
-  {
-    if(err) 
-    {
-      console.log(err);
-    }
-
-  });
+  await Pessoa.destroy({where:{id:id}});
 
   res.redirect('/pessoas');
 });
 
-app.post('/pessoa', (req, res) => 
+app.post('/pessoa', async (req, res) => 
 {
   console.log(req.body);
 
   const nome = req.body.nome;
   const ano = req.body.ano;
 
-  const sql = 
-  {
-    text:`insert into pessoas (nome, ano_nascimento) values ($1,$2)`,
-    values: [nome, ano]
-  }
+  await Pessoa.create({nome: nome, ano_nascimento:ano});
 
-  client.query(sql, (err, res) => 
-  {
-    if(err) 
-    {
-      console.log(err);
-    }
-
-  });
-
-  res.redirect('/pessoas');
+  res.redirect('/');
 });
 
 
-app.post('/editar', (req, res) => 
+app.post('/editar', async (req, res) => 
 {
   console.log(req.body);
 
-  const id = req.body.id;
+  const id = req.body.id; 
   const nome = req.body.nome;
   const ano = req.body.ano;
 
-  const sql = 
+  const pessoaNew = 
   {
-    text:`update pessoas set nome= $1,  ano_nascimento = $2 where id = $3`,
-    values: [nome, ano, id]
+    id,
+    nome,
+    ano_nascimento:ano
   }
 
-  client.query(sql, (err, res) => 
-  {
-    if(err) 
-    {
-      console.log(err);
-    }
-
-  });
+  await Pessoa.update(pessoaNew, { where:{id:id}});
+  
 
   res.redirect('/pessoas');
 });
 
 
-app.get('/editar/:id', (req, res) => 
+app.get('/editar/:id', async (req, res) => 
 {
   const id = req.params.id;
 
-  const sql = 
-  {
-    text:`select * from pessoas where id = $1`,
-    values: [id]
-  }
-
-  client.query(sql, (err,data) => 
-  {
-    if(err)
-    {
-      console.log(err);
-      return;
-    }
-    console.log(data.rows);
-    
-    const pessoa = data.rows[0];
-    res.render("editar", { layout: 'layouts/main', pessoa: pessoa });
-  });
+  const pessoa = await Pessoa.findOne({raw:true, where:{id:id}});
+  
+  res.render("editar", { layout: 'layouts/main', pessoa: pessoa });
   
 });
 

@@ -2,8 +2,8 @@
 {{#each pessoas}}
     
     <div>
-        {{this.nome}} - {{this.ano_nascimento}} - 
-        <form method="post" action="pessoa/{{this.id}}">
+        <a href="/pessoas/{{this.id}}">{{this.nome}}</a> - {{this.ano_nascimento}} - <a href="/editar/{{this.id}}">Editar</a>
+        <form method="post" action="/pessoa/{{this.id}}">
             <input type="submit" value="Remover">
         </form>
     </div>
